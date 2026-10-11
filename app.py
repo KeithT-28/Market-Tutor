@@ -262,6 +262,97 @@ elif page == "Learn":
     for bullet in bullets:
         st.markdown(f"- {bullet}")
     st.info(exercise)
+
+    # Expanded lesson notes: practical definitions, examples, common traps and a repeatable workflow.
+    lesson_details = {
+        "01 · Market structure": {
+            "Why it matters": "Market structure gives you the map before you choose a tool. Indicators can disagree or lag; swing points help describe what price has actually done.",
+            "Key ideas": [
+                ("Swing high / swing low", "A swing high is a local peak with lower highs around it; a swing low is a local trough with higher lows around it. There is no single universal candle-count rule, so use a consistent method when marking them."),
+                ("Trend versus range", "An uptrend usually advances through higher highs and higher lows. A downtrend usually makes lower highs and lower lows. In a range, price repeatedly rotates between areas and directional follow-through is limited."),
+                ("Impulse and pullback", "An impulse is a directional move; a pullback is a counter-move within the broader move. A pullback does not automatically mean the trend has reversed."),
+                ("Break of structure", "A meaningful move beyond a prior swing can suggest a change in control, but a brief wick beyond a level may be a false break. Look at the close, follow-through and wider context."),
+            ],
+            "Worked example": "SPY makes a swing low near $500, rallies to $510, pulls back to $505, then rises through $510. The higher low at $505 and a new high support an uptrend interpretation. If price instead falls decisively below $505, that bullish structure is weakened; it does not guarantee a downtrend.",
+            "Common mistakes": ["Calling a trend from one large candle.", "Changing the definition of a swing after seeing what happened next.", "Ignoring the higher timeframe or nearby resistance.", "Treating a break of one swing as certainty rather than evidence."],
+            "Practice steps": ["Mark the last two clear swing highs and lows.", "Label the environment: uptrend, downtrend, range or unclear.", "Write down the price behaviour that would weaken your read.", "Only then check indicators for supporting or conflicting evidence."],
+        },
+        "02 · Support & resistance": {
+            "Why it matters": "Support and resistance are decision areas, not invisible walls. Traders may watch prior turning points, consolidation edges and breakout areas, so reactions can cluster there.",
+            "Key ideas": [
+                ("Zones, not exact lines", "Price rarely respects a level to the exact cent. Mark a reasonable area around a cluster of reactions rather than drawing a line that implies false precision."),
+                ("Evidence quality", "A clear move away, multiple visible reactions and agreement with the broader structure can make a zone worth watching. Too many touches do not automatically make it stronger; repeated tests can consume resting orders."),
+                ("Breakout and retest", "A breakout is a move beyond a zone. A close beyond the zone and follow-through can add evidence. A retest is a return toward the broken area; it may hold, fail or never happen."),
+                ("Role reversal", "A former resistance area may act as support after a successful break, and vice versa. This is a possibility to test against price behaviour, not a rule."),
+            ],
+            "Worked example": "Suppose SPY has rejected the $520–$522 area several times. A candle wicking above $522 but closing back inside the zone is weaker breakout evidence than a decisive close above it followed by continued buying. A later pullback that holds the zone may strengthen the bullish case, while a close back below it weakens it.",
+            "Common mistakes": ["Drawing so many zones that every price looks important.", "Assuming the next touch must bounce.", "Entering only because price reached a line, without a trigger or invalidation.", "Ignoring scheduled news or unusually volatile conditions."],
+            "Practice steps": ["Mark only the two or three clearest nearby zones.", "Record why each zone matters (swing, repeated reaction, consolidation edge).", "Define what a convincing break would look like before it occurs.", "Identify the invalidation condition and the next obstacle to price."],
+        },
+        "03 · Moving averages": {
+            "Why it matters": "A moving average smooths past prices to help you see direction and context. Because it is calculated from historical data, it responds after price has moved rather than predicting the future.",
+            "Key ideas": [
+                ("SMA and EMA", "A simple moving average gives equal weight to observations in its window. An exponential moving average weights recent observations more heavily and generally reacts faster."),
+                ("Slope and location", "A rising average with price above it can support a bullish trend description; a falling average with price below it can support a bearish one. Neither is sufficient by itself."),
+                ("Fast and slow averages", "A shorter average reacts faster; a longer one changes more slowly. Crossovers summarise past price behaviour and can arrive late or whipsaw when price is ranging."),
+                ("Dynamic reference", "A moving average can act as a reference area during a trend, but price can slice through it repeatedly. Treat it as context, not guaranteed support or resistance."),
+            ],
+            "Worked example": "If SPY is above a rising 20-period average and the 20-period average is above a rising 50-period average, the recent trend context is positive. If price is far above both averages after a sharp rally, chasing may mean accepting poor risk/reward. Wait for a defined setup rather than buying just because the averages look bullish.",
+            "Common mistakes": ["Buying every moving-average touch.", "Treating a crossover as a complete strategy.", "Using an indicator setting without considering the chart timeframe.", "Forgetting averages are calculated from past prices."],
+            "Practice steps": ["Read price structure first.", "Describe the slope and ordering of the 20- and 50-period averages.", "Assess whether price is near the averages or unusually extended.", "Write down what price would invalidate the trend idea."],
+        },
+        "04 · RSI": {
+            "Why it matters": "The Relative Strength Index (RSI) is a momentum oscillator scaled from 0 to 100. It summarises the balance of recent gains and losses; it does not measure value or predict an exact turning point.",
+            "Key ideas": [
+                ("Traditional levels", "RSI above 70 is often called overbought and below 30 oversold. These are warning/context zones, not instructions to sell or buy."),
+                ("Trend regimes", "During strong uptrends, RSI can remain high; during strong downtrends, it can remain low. Some traders watch whether RSI holds higher ranges in an uptrend or lower ranges in a downtrend."),
+                ("Divergence", "Bullish divergence describes price making a lower low while RSI makes a higher low; bearish divergence is the opposite. Divergence can warn that momentum is changing, but it can persist and is not a timing signal on its own."),
+                ("Confirmation", "Look for price evidence such as a swing break or reclaim of a zone before treating an RSI observation as a trade idea."),
+            ],
+            "Worked example": "SPY rises while RSI reaches 74. This tells you momentum has been strong; it does not mean price must reverse. If price continues making higher highs and higher lows, fading the trend solely because RSI is above 70 can be costly. Instead, monitor structure and define what would show that momentum has actually weakened.",
+            "Common mistakes": ["Automatically shorting above 70 or buying below 30.", "Treating divergence as proof of an imminent reversal.", "Ignoring the price chart because RSI looks dramatic.", "Comparing RSI values without noting timeframe and market regime."],
+            "Practice steps": ["State the price trend before reading RSI.", "Record the RSI value and whether it is rising or falling.", "Ask whether the reading confirms or conflicts with price structure.", "Specify the price evidence you would need before changing your view."],
+        },
+        "05 · MACD & volume": {
+            "Why it matters": "MACD helps describe momentum using moving averages; volume describes trading activity. They answer different questions and should be interpreted alongside price rather than used as standalone signals.",
+            "Key ideas": [
+                ("MACD line", "The standard MACD line is the 12-period EMA minus the 26-period EMA. The signal line is commonly a 9-period EMA of MACD. Settings can vary."),
+                ("Signal and zero-line crosses", "A MACD cross above its signal line can indicate improving momentum; a move above zero means the shorter EMA is above the longer EMA. Both can lag and generate false signals in ranges."),
+                ("Histogram", "The histogram is the difference between MACD and its signal line. It can show whether the gap between them is widening or narrowing, but it is not a direct measure of future price movement."),
+                ("Volume context", "A breakout with above-average volume may indicate greater participation. But volume does not reveal whether all participants are buying or selling, and high volume can appear at both continuation and exhaustion points."),
+            ],
+            "Worked example": "Price breaks above a range and MACD rises above its signal line while volume expands. Those observations may support the breakout thesis, but you still need to assess whether price closes above the zone, whether the next candles follow through, where the setup fails and whether the potential reward justifies the risk.",
+            "Common mistakes": ["Counting MACD, RSI and moving averages as three independent confirmations when all are derived from price.", "Assuming high volume is automatically bullish.", "Ignoring the zero line or broader trend when reading MACD crosses.", "Using an indicator cross without a price-based invalidation."],
+            "Practice steps": ["Describe price action without indicators.", "Describe MACD direction, signal relationship and zero-line location.", "Compare recent volume with its own recent baseline.", "List both confirming and conflicting evidence."],
+        },
+        "06 · Trade planning": {
+            "Why it matters": "A chart idea is not a complete plan until you know what would prove it wrong and how much you could lose. Risk management cannot make a weak setup profitable, but it helps prevent one decision from causing disproportionate damage.",
+            "Key ideas": [
+                ("Setup and trigger", "A setup is the context you are watching; a trigger is the observable event that would prompt consideration. Example: an uptrend pulls back to a prior breakout zone, then forms a bullish close."),
+                ("Invalidation", "Choose the price behaviour that contradicts the thesis. It should be tied to market structure or the setup logic, not placed at an arbitrary distance just to allow a larger position."),
+                ("Risk and position size", "For a simplified example, if a paper account is $10,000 and a hypothetical risk limit is 0.5%, planned loss is $50. With a $2 entry-to-stop distance, a simplified share quantity is 25 shares before fees, slippage and gap risk. This is an illustration, not a recommendation."),
+                ("Reward-to-risk", "If the planned reward is $3 per share and planned risk is $1 per share, the ratio is 3:1. The ratio alone does not make a trade attractive; probability of success, execution costs and actual outcomes matter."),
+                ("Journal and review", "Record the thesis, trigger, invalidation, target, market conditions and outcome. Review a meaningful sample rather than drawing conclusions from one winning or losing trade."),
+            ],
+            "Worked example": "Hypothetical paper setup: entry at $520, invalidation at $518, and target area at $526. Planned risk is $2 per share and potential reward is $6 per share, or 3:1 before costs. Before taking it, ask whether the target is realistic given nearby resistance and whether the invalidation level genuinely contradicts the thesis.",
+            "Common mistakes": ["Moving a stop farther away after the trade idea fails.", "Choosing a target only to create an attractive reward-to-risk ratio.", "Ignoring gaps, slippage, fees and liquidity.", "Confusing one successful outcome with proof of an edge."],
+            "Practice steps": ["Write the market context and setup.", "Define the trigger and invalidation before the hypothetical entry.", "Estimate risk per share and position size from a chosen risk budget.", "Record the result and whether you followed your plan, separately from whether the trade won."],
+        },
+    }
+    detail = lesson_details[lesson]
+    st.subheader("Understand it in depth")
+    st.markdown(detail["Why it matters"])
+    for concept_title, concept_text in detail["Key ideas"]:
+        with st.expander(concept_title):
+            st.write(concept_text)
+    st.markdown("#### Worked example")
+    st.markdown(f'<div class="mt-card">{detail["Worked example"]}</div>', unsafe_allow_html=True)
+    st.markdown("#### Common mistakes")
+    for mistake in detail["Common mistakes"]:
+        st.markdown(f"- {mistake}")
+    st.markdown("#### A repeatable practice routine")
+    for step_no, step in enumerate(detail["Practice steps"], start=1):
+        st.markdown(f"**{step_no}.** {step}")
     with st.expander("Quick knowledge check"):
         if lesson.startswith("01"):
             q = st.radio("Which pattern most directly describes an uptrend?", [
