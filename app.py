@@ -119,6 +119,77 @@ def indicator_chart(df, indicator):
     fig.update_yaxes(showgrid=True, gridcolor="#263449", side="right")
     return fig
 
+def lesson_illustration(lesson):
+    """Build a clearly labelled hypothetical chart for the selected lesson."""
+    n = 60
+    x = np.arange(n)
+    # Deterministic examples keep the teaching illustration stable between reruns.
+    if lesson.startswith("01"):
+        close = 100 + 0.22*x + 2.2*np.sin(x/3.8)
+    elif lesson.startswith("02"):
+        close = 100 + 2.0*np.sin(x/4.1) + 0.35*np.sin(x/1.7)
+    elif lesson.startswith("03"):
+        close = 100 + 0.18*x + 2.0*np.sin(x/5.0)
+    elif lesson.startswith("04"):
+        close = 100 + 0.16*x + 3.1*np.sin(x/4.2)
+    elif lesson.startswith("05"):
+        close = 100 + 0.12*x + 2.4*np.sin(x/4.6)
+    else:
+        close = 100 + 0.16*x + 1.8*np.sin(x/4.8)
+    open_ = np.r_[close[0], close[:-1] + 0.25*np.sin(x[1:])]
+    high = np.maximum(open_, close) + 0.35 + 0.18*(1 + np.sin(x/2.7))
+    low = np.minimum(open_, close) - 0.35 - 0.18*(1 + np.cos(x/3.1))
+    volume = 800 + 180*np.abs(np.diff(np.r_[close[0], close]))*100 + 120*(1 + np.sin(x/2.4))
+    idx = pd.RangeIndex(1, n + 1, name="Illustrative bar")
+    df = pd.DataFrame({"Open": open_, "High": high, "Low": low, "Close": close, "Volume": volume}, index=idx)
+    df["MA20"] = df["Close"].rolling(20, min_periods=1).mean()
+    df["MA50"] = df["Close"].rolling(50, min_periods=1).mean()
+    delta = df["Close"].diff()
+    gain = delta.clip(lower=0).rolling(14, min_periods=1).mean()
+    loss = (-delta.clip(upper=0)).rolling(14, min_periods=1).mean()
+    rs = gain / loss.replace(0, np.nan)
+    df["RSI"] = (100 - 100 / (1 + rs)).fillna(50)
+    ema12 = df["Close"].ewm(span=12, adjust=False).mean()
+    ema26 = df["Close"].ewm(span=26, adjust=False).mean()
+    df["MACD"] = ema12 - ema26
+    df["MACD_Signal"] = df["MACD"].ewm(span=9, adjust=False).mean()
+
+    fig = go.Figure()
+    if lesson.startswith("04"):
+        fig.add_trace(go.Scatter(x=df.index, y=df["RSI"], name="RSI (illustrative)", line=dict(color="#c084fc", width=2)))
+        fig.add_hline(y=70, line_dash="dash", line_color="#ef6464", annotation_text="70 reference")
+        fig.add_hline(y=30, line_dash="dash", line_color="#22c55e", annotation_text="30 reference")
+        fig.update_yaxes(range=[0, 100], title="RSI (0–100)")
+        title = "Illustration: RSI is context, not an automatic reversal signal"
+    elif lesson.startswith("05"):
+        fig.add_trace(go.Scatter(x=df.index, y=df["MACD"], name="MACD line", line=dict(color="#60a5fa", width=2)))
+        fig.add_trace(go.Scatter(x=df.index, y=df["MACD_Signal"], name="Signal line", line=dict(color="#d7b56d", width=2)))
+        fig.add_hline(y=0, line_dash="dash", line_color="#98a6b8")
+        title = "Illustration: MACD momentum lines (hypothetical data)"
+    else:
+        fig.add_trace(go.Candlestick(x=df.index, open=df["Open"], high=df["High"], low=df["Low"], close=df["Close"], name="Hypothetical price", increasing_line_color="#22c55e", decreasing_line_color="#ef6464"))
+        if lesson.startswith("03"):
+            fig.add_trace(go.Scatter(x=df.index, y=df["MA20"], name="20-period average", line=dict(color="#d7b56d", width=2)))
+            fig.add_trace(go.Scatter(x=df.index, y=df["MA50"], name="50-period average", line=dict(color="#60a5fa", width=2)))
+            title = "Illustration: moving averages lag price"
+        elif lesson.startswith("02"):
+            fig.add_hrect(y0=99, y1=101, fillcolor="#d7b56d", opacity=0.18, line_width=0, annotation_text="Example support zone")
+            fig.add_hrect(y0=102.5, y1=104.5, fillcolor="#ef6464", opacity=0.15, line_width=0, annotation_text="Example resistance zone")
+            title = "Illustration: support and resistance are zones"
+        elif lesson.startswith("06"):
+            fig.add_hline(y=102, line_dash="dash", line_color="#22c55e", annotation_text="Hypothetical target")
+            fig.add_hline(y=100, line_dash="dash", line_color="#d7b56d", annotation_text="Hypothetical entry")
+            fig.add_hline(y=98.5, line_dash="dash", line_color="#ef6464", annotation_text="Hypothetical invalidation")
+            title = "Illustration: define entry, target and invalidation"
+        else:
+            title = "Illustration: higher swing highs and higher swing lows"
+            fig.add_annotation(x=15, y=float(df["High"].iloc[15]), text="Swing high", showarrow=True, arrowhead=2)
+            fig.add_annotation(x=24, y=float(df["Low"].iloc[24]), text="Higher low", showarrow=True, arrowhead=2)
+    fig.update_layout(template="plotly_dark", title=title, height=390, margin=dict(l=8, r=8, t=55, b=8), paper_bgcolor="#121d2d", plot_bgcolor="#121d2d", font=dict(color="#dce4ee"), legend=dict(orientation="h", y=1.02, x=0), xaxis_rangeslider_visible=False, hovermode="x unified")
+    fig.update_xaxes(title="Illustrative bar", showgrid=True, gridcolor="#263449")
+    fig.update_yaxes(showgrid=True, gridcolor="#263449", side="right")
+    return fig
+
 def get_market_data(symbol, interval):
     # Yahoo Finance generally limits intraday history to a relatively short window.
     period = "60d" if interval in ("15m", "30m", "60m") else "2y"
@@ -340,6 +411,21 @@ elif page == "Learn":
         },
     }
     detail = lesson_details[lesson]
+    st.subheader("See the concept on a chart")
+    st.caption("Teaching illustration only: these are synthetic, hypothetical values, not live or historical SPY prices and not trading signals.")
+    st.plotly_chart(lesson_illustration(lesson), use_container_width=True, config={"displaylogo": False})
+    if lesson.startswith("01"):
+        st.markdown("**How to read it:** compare successive peaks and troughs. A rising sequence of highs and lows supports an uptrend description; one candle alone does not establish a trend.")
+    elif lesson.startswith("02"):
+        st.markdown("**How to read it:** shaded bands represent areas where price might react, not exact prices that must hold. Watch closes and follow-through around the zones.")
+    elif lesson.startswith("03"):
+        st.markdown("**How to read it:** the faster average follows price more closely, while the slower average reacts later. Crossovers describe past movement and can whipsaw in ranges.")
+    elif lesson.startswith("04"):
+        st.markdown("**How to read it:** 70 and 30 are reference levels. RSI above 70 does not force an immediate decline, and RSI below 30 does not force a rebound.")
+    elif lesson.startswith("05"):
+        st.markdown("**How to read it:** compare the MACD and signal lines with the zero line. Crossovers can indicate momentum changes, but they are lagging and should be checked against price action.")
+    else:
+        st.markdown("**How to read it:** the example marks a hypothetical entry, target and invalidation. The target is not guaranteed; planned risk and reward should be assessed before a trade idea.")
     st.subheader("Understand it in depth")
     st.markdown(detail["Why it matters"])
     for concept_title, concept_text in detail["Key ideas"]:
