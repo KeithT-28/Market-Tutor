@@ -270,11 +270,17 @@ elif page == "Learn":
                 "Repeatedly overlapping highs and lows"
             ])
             if st.button("Check answer", key="lesson_check"):
-                st.success("Correct: higher swing highs and higher swing lows describe the classic uptrend structure.") if q.startswith("Higher") else st.warning("Not quite. Focus on the direction of successive swing highs and lows.")
+                if q.startswith("Higher"):
+                    st.success("Correct: higher swing highs and higher swing lows describe the classic uptrend structure.")
+                else:
+                    st.warning("Not quite. Focus on the direction of successive swing highs and lows.")
         elif lesson.startswith("04"):
             q = st.radio("RSI above 70 means price must reverse immediately.", ["True", "False"])
             if st.button("Check answer", key="lesson_check"):
-                st.success("Correct: False. RSI can remain elevated during a strong trend.") if q == "False" else st.warning("RSI can stay elevated in a strong uptrend; it is not an automatic reversal signal.")
+                if q == "False":
+                    st.success("Correct: False. RSI can remain elevated during a strong trend.")
+                else:
+                    st.warning("RSI can stay elevated in a strong uptrend; it is not an automatic reversal signal.")
         else:
             st.write("In your own words, describe one piece of evidence and one condition that would invalidate your interpretation.")
             st.text_area("Your notes", key=f"notes_{lesson}")
